@@ -1,0 +1,625 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Vika / Order page – admin</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&family=JetBrains+Mono:wght@500&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --bg:#F2F1EF;
+    --surface:#FFFFFF;
+    --text:#111111;
+    --text-secondary:#666666;
+    --text-tertiary:#999999;
+    --accent:#4A5D4F;
+    --stroke:rgba(17,17,17,0.08);
+  }
+  *{margin:0;padding:0;box-sizing:border-box}
+  html{scroll-behavior:smooth}
+  body{
+    background:var(--bg);color:var(--text);
+    font-family:'Inter',system-ui,sans-serif;
+    -webkit-font-smoothing:antialiased;line-height:1.5;
+  }
+  .wrap{max-width:1060px;margin:0 auto;padding:0 32px}
+
+  /* ---------- sticky breadcrumb ---------- */
+  .crumb{
+    position:fixed;top:24px;left:32px;z-index:50;
+    display:flex;align-items:center;gap:10px;
+    background:rgba(242,241,239,.8);backdrop-filter:blur(10px);
+    padding:8px 16px 8px 8px;border-radius:999px;
+  }
+  .monogram{
+    width:36px;height:24px;border-radius:999px;background:var(--text);
+    display:flex;align-items:center;justify-content:center;
+    color:var(--bg);font-weight:600;font-size:11px;
+  }
+  .crumb a{color:var(--text-tertiary);text-decoration:none;font-size:15px;font-weight:500}
+  .crumb a:hover{color:var(--accent)}
+  .crumb .sep{color:var(--text-tertiary)}
+  .crumb .here{color:var(--text);font-size:15px;font-weight:600}
+
+  /* ---------- type ---------- */
+  .label{
+    font-size:13px;font-weight:600;letter-spacing:.08em;text-transform:uppercase;
+    color:var(--text-tertiary);
+  }
+  h1{font-size:64px;line-height:1.08;font-weight:500;letter-spacing:-.04em}
+  .h-giant{font-size:52px;line-height:1.1;font-weight:500;letter-spacing:-.04em;max-width:18ch;margin:20px auto 0;text-align:center}
+  h3{font-size:22px;line-height:1.35;font-weight:600;letter-spacing:-.02em;margin-bottom:18px}
+  p{font-size:18px;line-height:1.6;color:var(--text-secondary)}
+  p strong,li strong{color:var(--text);font-weight:600}
+  .row .body a{color:var(--text);text-decoration:underline;text-underline-offset:3px;text-decoration-color:rgba(17,17,17,.3)}
+  .row .body a:hover{color:var(--accent);text-decoration-color:currentColor}
+
+  /* ---------- hero ---------- */
+  .hero{padding-top:160px}
+  .hero .label{display:block;margin-bottom:20px}
+  .hero h1{max-width:16ch}
+  .standfirst{margin-top:28px;font-size:22px;line-height:1.5;max-width:56ch;font-weight:500}
+
+  .meta{
+    display:grid;grid-template-columns:repeat(3,1fr);gap:40px;
+    margin-top:56px;padding-top:32px;border-top:1px solid var(--stroke);
+  }
+  .meta div span{display:block}
+  .meta .k{font-size:13px;font-weight:600;letter-spacing:.08em;text-transform:uppercase;color:var(--text-tertiary);margin-bottom:6px}
+  .meta .v{font-size:16px;font-weight:500;color:var(--text)}
+  .img-real{display:block;width:100%;height:auto;border-radius:12px;margin:32px 0 36px;box-shadow:0 2px 6px rgba(17,17,17,.05),0 16px 48px rgba(17,17,17,.10)}
+.img-flat{display:block;width:100%;height:auto;margin:32px 0 36px}
+.img-real:last-child,.img-flat:last-child{margin-bottom:0}
+
+  /* ---------- section scaffolding ---------- */
+  section.wrap{padding-top:96px;padding-bottom:0}
+  .sec-head{text-align:center;margin-bottom:72px}
+
+  .row{
+    display:grid;grid-template-columns:200px 1fr;gap:56px;align-items:start;
+    padding:48px 0;border-top:1px solid var(--stroke);
+  }
+  .sec-head + .row{border-top:none;padding-top:0}
+.row.no-rule{border-top:none}
+  .row .side{position:sticky;top:110px}
+  .row .side .t{font-size:24px;font-weight:600;letter-spacing:-.02em;line-height:1.3}
+  .row .side .s{margin-top:8px;font-size:15px;color:var(--text-tertiary)}
+  .row .body > p{margin-bottom:20px}
+  .row .body > p:last-child{margin-bottom:0}
+
+  /* ---------- annotated diagram ---------- */
+  .diagram{position:relative;margin:8px 0 0;padding:116px 0 164px}
+  .diagram .shot{position:relative;line-height:0}
+  .diagram .shot img{
+    display:block;width:100%;height:auto;border-radius:12px;
+    box-shadow:0 2px 6px rgba(17,17,17,.05),0 16px 48px rgba(17,17,17,.10);
+  }
+  .dg-lead{position:absolute;width:1px;background:rgba(17,17,17,.42)}
+  .dg-pin{
+    position:absolute;width:24px;height:24px;border-radius:50%;
+    background:var(--surface);border:1px solid rgba(17,17,17,.15);
+    color:var(--text);font-size:12px;font-weight:600;line-height:22px;text-align:center;
+    transform:translate(-50%,-50%);
+  }
+  .dg-lbl{position:absolute;width:45%}
+  .dg-lbl p{font-size:13px;line-height:1.55;color:var(--text-secondary)}
+  .dg-lbl .n{display:none}
+  .dg-lbl.t{top:0;height:116px;display:flex;flex-direction:column;justify-content:flex-end;padding-bottom:16px;width:45%}
+  .dg-lbl.b{bottom:0;height:164px;padding-top:16px;width:30%}
+  .dg-lbl::after{content:'';position:absolute;width:1px;height:16px;background:rgba(17,17,17,.42)}
+  .dg-lbl.t::after{bottom:0}
+  .dg-lbl.b::after{top:0}
+  .dg-lbl.t1{left:0;width:26%}      .dg-lbl.t1::after{left:30.8%}
+  .dg-lbl.t2{right:0;width:30%}     .dg-lbl.t2::after{left:73.3%}
+  .dg-lbl.b1{left:4%;width:32%}   .dg-lbl.b1::after{left:40%}
+  .dg-lead.l1{left:8%;top:0;height:31.6%}
+  .dg-lead.l2{left:92%;top:0;height:50%}
+  .dg-lead.l3{left:16.8%;bottom:0;height:3.4%}
+  .dg-pin.p1{left:8%;top:31.6%}
+  .dg-pin.p2{left:92%;top:50%}
+  .dg-pin.p3{left:16.8%;top:96.6%}
+  /* solid dots,not numbered pins — each sits in clear space.
+     line,tick and dot are all centred on the same X%: the 1px rules get
+     -.5px,the 5px dot -2.5px,so nothing depends on transform rounding. */
+  .diagram .dg-pin{
+    width:7px;height:7px;border:0;font-size:0;line-height:0;
+    background:var(--text);
+    box-shadow:0 0 0 2px rgba(255,255,255,.95),0 0 0 3px rgba(17,17,17,.3);
+    transform:none;margin-left:-3.5px;margin-top:-3.5px;
+  }
+  .diagram .dg-lbl .n{display:none}
+  .diagram .dg-lbl::after{margin-left:-.5px}
+  .diagram .dg-lead{background:rgba(17,17,17,.45);margin-left:-.5px}
+  /* --- overlay reveal: hold the screenshot{opacity:0;transition:opacity .25s ease .12s}
+  .diagram.anim .dg-pin{
+    opacity:0;transform:scale(.3);
+    transition:opacity .14s ease .08s,transform .22s cubic-bezier(.34,1.45,.64,1) .08s;
+  }
+  /* the line grows out of the dot,so its origin is the dot end of the lead */
+  .diagram.anim .dg-lead{
+    opacity:0;transform:scaleY(0);transform-origin:bottom;
+    transition:opacity .01s linear .2s,transform .24s cubic-bezier(.4,0,.2,1) .2s;
+  }
+  .diagram.anim .dg-lead.l3{transform-origin:top}
+  .diagram.anim .dg-lbl{
+    opacity:0;transform:translateY(5px);
+    transition:opacity .24s ease .36s,transform .24s ease .36s;
+  }
+  .diagram.anim.in .dg-pin{opacity:1;transform:scale(1)}
+  .diagram.anim.in .dg-lead{opacity:1;transform:scaleY(1)}
+  .diagram.anim.in .dg-lbl{opacity:1;transform:none}
+
+    /* --- order information & header/sidebar diagrams --- */
+  .diagram.oinfo,.diagram.opanels{position:relative;margin:32px 0 36px;padding:116px 0 120px}
+  .diagram.oinfo .dg-lbl.b,.diagram.opanels .dg-lbl.b{height:120px}
+  .diagram.oinfo .dg-lbl.t1{left:23.7%;right:auto;width:24%;text-align:left}   .diagram.oinfo .dg-lbl.t1::after{left:0;right:auto}
+  .diagram.oinfo .dg-lbl.t2{left:50.7%;right:auto;width:30%;text-align:left}   .diagram.oinfo .dg-lbl.t2::after{left:0;right:auto}
+  .diagram.oinfo .dg-lbl.b1{left:58%;right:auto;width:34%;text-align:left}     .diagram.oinfo .dg-lbl.b1::after{left:0;right:auto}
+  .diagram.oinfo .dg-lead.l1{left:23.7%;top:0;bottom:auto;height:9.2%}  .diagram.oinfo .dg-pin.p1{left:23.7%;top:9.2%}
+  .diagram.oinfo .dg-lead.l2{left:50.7%;top:0;bottom:auto;height:22.1%}  .diagram.oinfo .dg-pin.p2{left:50.7%;top:22.1%}
+  .diagram.oinfo .dg-lead.l3{left:58%;top:auto;bottom:0;height:55.9%}    .diagram.oinfo .dg-pin.p3{left:58%;top:44.1%}
+  .video{position:relative;width:100%;aspect-ratio:16/9;margin:32px 0 36px;border-radius:12px;overflow:hidden;background:var(--surface);box-shadow:0 2px 6px rgba(17,17,17,.05),0 16px 48px rgba(17,17,17,.10)}
+  .video iframe{position:absolute;inset:0;width:100%;height:100%;border:0}
+  .video:last-child{margin-bottom:0}
+  /* header + sidebar composition: three separate layers,each with the site shadow */
+  .comp{position:relative;width:100%;aspect-ratio:1236/614;line-height:0}
+  .comp > div{position:absolute}
+  .diagram .shot .comp img{display:block;width:100%;height:auto;border-radius:0;box-shadow:none}
+  .comp-a{left:3.6%;top:4.6%;width:65.5%}
+  .comp-a::before{content:'';position:absolute;left:3.97%;top:0;right:0;bottom:0;border-radius:0;box-shadow:0 2px 6px rgba(17,17,17,.05),0 16px 48px rgba(17,17,17,.10);z-index:-1}
+  .comp-a{z-index:0} .comp-a img{position:relative;z-index:1}
+  .comp-b{left:67.8%;top:14.7%;width:13.1%} .comp-c{left:80.9%;top:17.9%;width:13.1%}
+  .diagram .shot .comp-b img,.diagram .shot .comp-c img{border-radius:0;box-shadow:0 2px 6px rgba(17,17,17,.05),0 16px 48px rgba(17,17,17,.10)}
+  .diagram.opanels .dg-lbl.t1{left:auto;right:45.6%;width:32%;text-align:right}  .diagram.opanels .dg-lbl.t1::after{left:auto;right:0}
+  .diagram.opanels .dg-lbl.t2{left:75.2%;right:auto;width:24.8%;text-align:left}  .diagram.opanels .dg-lbl.t2::after{left:0;right:auto}
+  .diagram.opanels .dg-lbl.b1{left:52.8%;right:auto;width:34%;text-align:right}   .diagram.opanels .dg-lbl.b1::after{left:auto;right:0}
+  .diagram.opanels .dg-lead.l1{left:54.4%;top:0;bottom:auto;height:12%}   .diagram.opanels .dg-pin.p1{left:54.4%;top:12%}
+  .diagram.opanels .dg-lead.l2{left:75.2%;top:0;bottom:auto;height:16.3%} .diagram.opanels .dg-pin.p2{left:75.2%;top:16.3%}
+  .diagram.opanels .dg-lead.l3{left:86.8%;top:auto;bottom:0;height:57.3%} .diagram.opanels .dg-pin.p3{left:86.8%;top:42.7%}
+  .diagram.items,.diagram.activity{position:relative;margin:32px 0 36px;padding:0 0 120px}
+  .diagram.activity{padding:0 0 120px}
+  .diagram.activity .dg-lbl.b{height:120px}
+  .diagram.activity .dg-lbl.b1{left:17.4%;right:auto;width:36%;text-align:left}
+  .diagram.activity .dg-lbl.b1::after{left:0;right:auto}
+  .diagram.activity .dg-lead.l3{left:17.4%;right:auto;top:auto;bottom:0;height:76%}
+  .diagram.activity .dg-pin.p3{left:17.4%;right:auto;top:24%}
+  /* --- items summary diagram: one label,pencil on the last row --- */
+  .diagram.items .dg-lbl.b{height:120px}
+  .diagram.items .dg-lbl.b1{left:5.6%;right:auto;width:36%;text-align:left}
+  .diagram.items .dg-lbl.b1::after{left:0;right:auto}
+  .diagram.items .dg-lead.l3{left:5.5%;right:auto;top:auto;bottom:0;height:50.2%}
+  .diagram.items .dg-pin.p3{left:5.5%;right:auto;top:49.8%}
+  @media (max-width:860px){}
+/* ---------- problem gallery ---------- */
+  .gal{position:relative;margin:32px 0 36px}
+  .gal:last-child{margin-bottom:0}
+  .gal-track{position:relative;aspect-ratio:2674/1920;overflow:hidden;border-radius:12px;background:var(--surface);box-shadow:0 2px 6px rgba(17,17,17,.05),0 16px 48px rgba(17,17,17,.10)}
+  .gal-slide{position:absolute;inset:0;width:100%;height:100%;object-fit:cover;opacity:0;transition:opacity .45s ease}
+  .gal-slide.on{opacity:1}
+  .gal-btn{
+    position:absolute;top:50%;transform:translateY(-50%);width:40px;height:40px;border-radius:999px;
+    border:1px solid var(--stroke);background:var(--surface);color:var(--text);
+    display:inline-flex;align-items:center;justify-content:center;cursor:pointer;padding:0;
+    box-shadow:0 1px 3px rgba(17,17,17,.08);transition:background .15s ease,color .15s ease;
+  }
+  .gal-btn:hover{background:var(--text);color:var(--bg)}
+  .gal-prev{left:12px} .gal-next{right:12px}
+  .gal-dots{display:flex;justify-content:center;gap:8px;margin-top:14px}
+  .gal-dots button{width:8px;height:8px;border-radius:50%;border:0;padding:0;background:rgba(17,17,17,.18);cursor:pointer;transition:background .15s ease}
+  .gal-dots button[aria-selected="true"]{background:var(--text)}
+  @media (max-width:860px){.gal-btn{width:34px;height:34px}}
+/* ---------- in-body heading ladder ---------- */
+  .h3{font-size:22px;line-height:1.3;font-weight:600;letter-spacing:-.01em;color:var(--text);margin:40px 0 16px}
+  .h4{font-size:18px;line-height:1.4;font-weight:600;color:var(--text);margin:28px 0 12px}
+  .row .body > .h3:first-child,.row .body > .h4:first-child{margin-top:0}
+  .h3 + .h4{margin-top:16px}
+  @media (max-width:860px){.h3{font-size:20px;margin-top:32px}}
+/* ---------- problem list ---------- */
+  .pblist{list-style:none;margin:0 0 20px}
+  .pblist:last-child{margin-bottom:0}
+  .pblist li{
+    position:relative;padding:0 0 0 22px;margin-bottom:10px;
+    font-size:17px;line-height:1.5;color:var(--text-secondary);
+  }
+  .pblist li:last-child{margin-bottom:0}
+  .pblist li:before{
+    content:"";position:absolute;left:0;top:10px;
+    width:7px;height:7px;border-radius:2px;background:var(--accent);opacity:.55;
+  }
+
+  /* ---------- gates strip ---------- */
+  /* --- flow: eight beats,one column{margin:34px 0 0}
+
+  /* ---------- metrics table ---------- */
+  table{width:100%;border-collapse:collapse;margin-top:8px}
+  th{
+    text-align:left;font-size:13px;font-weight:600;letter-spacing:.06em;text-transform:uppercase;
+    color:var(--text-tertiary);padding:0 16px 12px 0;border-bottom:1px solid rgba(17,17,17,.2);
+  }
+  td{
+    padding:18px 16px 18px 0;border-bottom:1px solid var(--stroke);
+    font-size:16px;line-height:1.5;color:var(--text-secondary);vertical-align:top;
+  }
+  td:first-child{color:var(--text);font-weight:500;width:44%}
+
+  /* ---------- contact — same material as this case's cover on the homepage ---------- */
+  .cta{
+    position:relative;overflow:hidden;isolation:isolate;
+    margin:80px 0 32px;padding:92px 40px 80px;text-align:center;border-radius:26px;
+    background:
+      radial-gradient(90% 120% at 15% 0%, rgba(255,255,255,.55) 0%, rgba(255,255,255,0) 55%),
+      linear-gradient(150deg,#DFE6E0 0%,#C3D0C6 100%);
+  }
+  .cta::before{
+    content:'';position:absolute;inset:0;z-index:-1;pointer-events:none;
+    background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='180' height='180'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='180' height='180' filter='url(%23n)'/%3E%3C/svg%3E");
+    opacity:.30;mix-blend-mode:multiply;
+  }
+  .cta-k{
+    display:inline-flex;align-items:center;gap:10px;margin:0 0 22px;
+    font-size:16px;font-weight:500;color:var(--accent);
+  }
+  .cta-k .dot{width:8px;height:8px;border-radius:50%;background:var(--accent)}
+  .cta-l{
+    font-size:24px;line-height:1.35;color:var(--text);letter-spacing:-.01em;
+    margin:0 auto 34px;max-width:40ch;
+  }
+  .cta-a{display:flex;flex-wrap:wrap;justify-content:center;gap:12px}
+  .cta-b{
+    display:inline-flex;align-items:center;gap:8px;padding:13px 22px;border-radius:14px;
+    background:rgba(255,255,255,.62);border:0;
+    font-size:16px;color:var(--text);text-decoration:none;
+    transition:background .18s ease,transform .18s ease;
+  }
+  .cta-b:hover{background:rgba(255,255,255,.92);transform:translateY(-1px)}
+  .cta-b span{color:var(--text-tertiary);font-size:14px}
+  .cta-c{margin:46px 0 0;font-size:13px;color:rgba(17,17,17,.34)}
+  footer{padding:48px 0 64px;color:var(--text-tertiary);font-size:14px}
+
+  /* ---------- entrance ---------- */
+  .fade{opacity:0;transform:translateY(12px);transition:opacity .4s ease-out,transform .4s ease-out}
+  .fade.in{opacity:1;transform:none}
+  @media (prefers-reduced-motion: reduce){.fade{opacity:1;transform:none;transition:none}}
+  @media (prefers-reduced-motion: reduce){
+    .diagram.anim .dg-lead,.diagram.anim .dg-pin,.diagram.anim .dg-lbl{opacity:1;transform:none;transition:none}
+  }
+
+  @media (max-width:860px){
+    h1{font-size:40px}
+    .h-giant{font-size:32px}
+    .meta{grid-template-columns:1fr 1fr;gap:24px}
+    .meta div:first-child{grid-column:1 / -1}
+    .row{grid-template-columns:1fr;gap:16px}
+    .cta{margin-bottom:32px;padding:60px 22px 54px;border-radius:20px}
+    .cta-l{font-size:18px}
+    .row .side{position:static}
+    .diagram{padding:0;display:flex;flex-direction:column}
+    .diagram .shot{order:0}
+    .dg-lbl{position:static;width:auto;height:auto;display:block;padding:10px 0}
+    .dg-lbl::after{display:none}
+    .dg-lbl .n{
+      display:inline-block;min-width:22px;height:22px;border-radius:50%;margin-right:10px;
+      background:var(--surface);border:1px solid rgba(17,17,17,.15);
+      font-size:12px;font-weight:600;line-height:20px;text-align:center;color:var(--text);
+    }
+    .dg-lbl p{display:inline;font-size:16px}
+    /* the .t/.b/.n positional rules outrank .dg-lbl — reset them explicitly */
+    .dg-lbl.t,.dg-lbl.b,.dg-lbl.t1,.dg-lbl.t2,.dg-lbl.b1{
+      position:static;left:auto;right:auto;top:auto;bottom:auto;
+      width:auto;height:auto;display:block;text-align:left;padding:10px 0;
+    }
+    .diagram .dg-pin{
+      display:block;width:18px;height:18px;border-radius:50%;border:0;
+      background:var(--text);color:#fff;
+      box-shadow:0 0 0 2px rgba(255,255,255,.9),0 1px 4px rgba(17,17,17,.25);
+      font-size:10.5px;font-weight:600;line-height:18px;text-align:center;
+      margin-left:-9px;margin-top:-9px;
+    }
+    .diagram .dg-lbl .n{
+      display:inline-block;min-width:18px;height:18px;border-radius:50%;margin-right:10px;
+      background:var(--text);border:0;color:#fff;
+      font-size:10.5px;font-weight:600;line-height:18px;text-align:center;vertical-align:2px;
+    }
+    .diagram.items .dg-lbl.b1,.diagram.activity .dg-lbl.b1,.diagram.oinfo .dg-lbl.t1,.diagram.oinfo .dg-lbl.t2,.diagram.oinfo .dg-lbl.b1,.diagram.opanels .dg-lbl.t1,.diagram.opanels .dg-lbl.t2,.diagram.opanels .dg-lbl.b1{left:auto;right:auto;width:auto;text-align:left}
+    .diagram.items,.diagram.activity,.diagram.oinfo,.diagram.opanels{margin:24px 0 0;padding:0}
+    /* header + sidebar composition: stack on small screens */
+    .comp{aspect-ratio:auto;display:grid;grid-template-columns:1fr 1fr;gap:12px}
+    .comp > div{position:static;width:auto}
+    .comp-a{position:relative;grid-column:1 / -1}
+    .comp-a::before{left:3.97%}
+    .diagram.opanels .dg-pin{display:none}
+    .diagram.anim .dg-lbl{transition-delay:0s}
+    .dg-lbl.t1{order:1} .dg-lbl.b1{order:3} .dg-lbl.t2{order:5}
+    .dg-lead{display:none}
+    .diagram.oinfo .dg-lbl.t1,.diagram.opanels .dg-lbl.t1{order:1} .diagram.oinfo .dg-lbl.t2,.diagram.opanels .dg-lbl.t2{order:2} .diagram.oinfo .dg-lbl.b1,.diagram.opanels .dg-lbl.b1{order:3}
+    .dg-pin{width:20px;height:20px;line-height:18px;font-size:11px}
+    .hero{padding-top:120px}
+    td:first-child{width:auto}
+  }
+</style>
+</head>
+<body>
+
+<div class="crumb">
+  <div class="monogram">VK</div>
+  <a href="index.html">Vika</a>
+  <span class="sep">/</span>
+  <span class="here">Order page – admin</span>
+</div>
+
+<header class="hero wrap">
+  <span class="label fade">Case study — logistics ERP</span>
+  <h1 class="fade">One order page, two roles</h1>
+  <p class="standfirst fade">Zakaz.ua — food tech that offers collection and timely product delivery from large supermarkets.</p>
+
+  <div class="meta fade">
+    <div><span class="k">Project</span><span class="v">zakaz.ua — UX/UI design of a desktop application, logistics</span></div>
+    <div><span class="k">Scope</span><span class="v">ERP order page for two roles: operator and financier</span></div>
+    <div><span class="k">Year · Status</span><span class="v">2022 · Concept, signed off by the client</span></div>
+  </div>
+</header>
+
+<section class="wrap">
+  <div class="sec-head fade">
+    <span class="label">01 · The project</span>
+    <h2 class="h-giant">Two roles, one order page</h2>
+  </div>
+
+  <div class="row fade">
+    <div class="side">
+      <div class="t">About the project</div>
+    </div>
+    <div class="body">
+      <p><a href="https://zakaz.ua/" target="_blank" rel="noopener">Zakaz.ua</a> — food tech that offers collection and timely product delivery from large supermarkets.</p>
+      <p>Let’s look at possible operator and financier workflows to understand the task.</p>
+      <p>In a nutshell, it may look this way:</p>
+      <img class="img-flat fade" src="assets/order-page-admin-01-bef29f97.png" alt="Order journey: the client orders on Zakaz; the system routes clean orders straight to the picker and flagged ones to the operator for a check; the picker prepares, the courier delivers; a wrong item triggers a refund handled by the courier and the financier." />
+      <p>Both roles do all of this inside the ERP — the corporate system that runs accounting and management.</p>
+    </div>
+  </div>
+</section>
+
+<section class="wrap">
+  <div class="sec-head fade">
+    <span class="label">02 · The problem</span>
+    <h2 class="h-giant">What the client came with</h2>
+  </div>
+
+  <div class="row fade">
+    <div class="side">
+      <div class="t">Problems</div>
+    </div>
+    <div class="body">
+      <p>The client came with a list of problems to solve in the interface.</p>
+      <div class="gal" data-autoplay="1">
+        <div class="gal-track">
+          <img class="gal-slide" data-dur="6" src="assets/order-page-admin-02-fe7918f1.jpg" alt="1 of 4 — the page is overloaded: every function for every role is on one screen" />
+          <img class="gal-slide" data-dur="9" src="assets/order-page-admin-03-d557c1fc.jpg" alt="2 of 4 — available actions aren’t obvious: unless you already know the system, you can’t tell what a button does or how to change anything in the order" />
+          <img class="gal-slide" data-dur="7" src="assets/order-page-admin-04-a0b29dba.jpg" alt="3 of 4 — the interface is ten years old; everything looks and behaves old school" />
+          <img class="gal-slide" data-dur="8" src="assets/order-page-admin-05-6c973a42.jpg" alt="4 of 4 — information is duplicated per role: operator and financier see the same fields and buttons, most of them irrelevant to their task" />
+          <button class="gal-btn gal-prev" type="button" aria-label="Previous problem"><svg width="16" height="16" viewBox="0 0 16 16" fill="none" aria-hidden="true"><path d="M10 3 5 8l5 5" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"/></svg></button>
+          <button class="gal-btn gal-next" type="button" aria-label="Next problem"><svg width="16" height="16" viewBox="0 0 16 16" fill="none" aria-hidden="true"><path d="m6 3 5 5-5 5" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"/></svg></button>
+        </div>
+        <div class="gal-dots" role="tablist"></div>
+      </div>
+    </div>
+  </div>
+  <div class="row fade">
+    <div class="side">
+      <div class="t">Metrics to influence</div>
+    </div>
+    <div class="body">
+      <ul class="pblist">
+        <li>Time to process an order, for the operator and the financier.</li>
+        <li>Time to onboard a new employee.</li>
+      </ul>
+      <h4 class="h4">Design task</h4>
+      <p>Redesign the interface:</p>
+      <ul class="pblist">
+        <li>Offer a design concept to make the interface more modern</li>
+        <li>An operator and a financier see on their order page only the functions and actions their tasks need.</li>
+      </ul>
+    </div>
+  </div>
+</section>
+
+<section class="wrap">
+  <div class="sec-head fade">
+    <span class="label">03 · Discovery</span>
+    <h2 class="h-giant">Mapping the system and the people in it</h2>
+  </div>
+
+  <div class="row fade">
+    <div class="side">
+      <div class="t">Object-oriented UX</div>
+      <div class="s">Step 1</div>
+    </div>
+    <div class="body">
+      <p>I used Object-Oriented UX to map the system’s objects — their classes, data types, values, and what each role can do with them — for a comprehensive overview.</p>
+      <img class="img-real fade" src="assets/order-page-admin-06-7e723989.jpg" alt="The object map in a spreadsheet: the Order class with its parameters, data types, example values, nullability, min and max." />
+    </div>
+  </div>
+  <div class="row fade">
+    <div class="side">
+      <div class="t">Customer interview</div>
+      <div class="s">Step 2</div>
+    </div>
+    <div class="body">
+      <p>I talked with an operator and a financier to understand their flows and the tasks they complete in the system.</p>
+      <img class="img-real fade" src="assets/order-page-admin-07-1d5f667d.jpg" alt="Interview results on a whiteboard: sticky notes per interviewee grouped by context, pains, joys, tasks, goals and insights, next to a Value Proposition Canvas." />
+      <h3 class="h3">Operator</h3>
+      <ul class="pblist">
+        <li>see what issues are needed to be solved in an order</li>
+        <li>monitor/change order status</li>
+        <li>check a client’s information</li>
+        <li>call/send SMS to a client</li>
+        <li>check/change delivery info (address, shop address, delivery time)</li>
+        <li>leave comments to a picker, courier</li>
+        <li>open tasks for other employees</li>
+        <li>print documents</li>
+        <li>combine orders</li>
+        <li>order invoice with a stamp</li>
+        <li>see transactions of an order</li>
+      </ul>
+      <h3 class="h3">Financier</h3>
+      <ul class="pblist">
+        <li>see what tasks are open for them</li>
+        <li>monitor order status</li>
+        <li>check client information</li>
+        <li>call/send SMS to a client</li>
+        <li>open tasks for other employees</li>
+        <li>prepare invoice</li>
+        <li>prepare an act of reporting (an act of reporting with a stamp)</li>
+        <li>see transactions of the order</li>
+      </ul>
+    </div>
+  </div>
+  <div class="row fade">
+    <div class="side">
+      <div class="t">Workflow diagrams</div>
+      <div class="s">Step 3</div>
+    </div>
+    <div class="body">
+      <p>The diagram is divided into 3 parts: placing an order, processing an order, delivery.</p>
+      <p>The roles that were taken into account: client, operator, courier, picker, financier, system.</p>
+      <img class="img-real fade" src="assets/order-page-admin-08-30f43e67.jpg" alt="BPMN workflow diagram in three swimlanes — placing an order, processing an order, delivery — with a legend for each role." />
+    </div>
+  </div>
+</section>
+
+<section class="wrap">
+  <div class="sec-head fade">
+    <span class="label">04 · The solution</span>
+    <h2 class="h-giant">Concept, and how it was checked</h2>
+  </div>
+
+  <div class="row fade">
+    <div class="side">
+      <div class="t">Work on a solution</div>
+    </div>
+    <div class="body">
+      <p>From the flow diagram and the OO UX grid I wrote the features up as user stories.</p>
+      <p>After going through the technical limitations with the developers, I moved on to mockups and a prototype.</p>
+      <p>The visual concept took its cues from the Zakaz.ua customer site, so the look and feel stayed consistent.</p>
+      <img class="img-real fade" src="assets/order-page-admin-09-ea53d4fa.jpg" alt="Style tile — Zakaz.ua colours (greens, greys, alarm red) and the TT Norms Pro type ramp." />
+    </div>
+  </div>
+  <div class="row fade">
+    <div class="side">
+      <div class="t">Solution</div>
+    </div>
+    <div class="body">
+      <p>Heuristic analysis was performed to validate design solutions.</p>
+      <p>At this stage of the project, this method of validation is very convenient and effective because it is easy to perform, does not require additional resources, and gives effective results, which are described in the reports.</p>
+      <h3 class="h3">Operator</h3>
+      <h4 class="h4">Order information</h4>
+      <p>The first tab is the order itself — client, delivery, and the tasks and warnings attached to it: everything an operator needs while processing, including a way to contact the client.</p>
+      <figure class="diagram oinfo anim">
+        <div class="dg-lbl t t1"><p><span class="n">1</span>The page is split into three tabs for easier navigation.</p></div>
+        <div class="dg-lbl t t2"><p><span class="n">2</span>Warnings sit first and in red. Hovering one explains what to do, which shortens the learning curve.</p></div>
+        <div class="shot">
+          <img src="assets/order-page-admin-10-07b86e9c.jpg" alt="Operator — order information: client, delivery, warnings with a hover explanation, comments and payment.">
+          <span class="dg-lead l1"></span><span class="dg-lead l2"></span><span class="dg-lead l3"></span>
+          <span class="dg-pin p1">1</span><span class="dg-pin p2">2</span><span class="dg-pin p3">3</span>
+        </div>
+        <div class="dg-lbl b b1"><p><span class="n">3</span>Comments often come up mid-call — the operator leaves them for the picker or the courier without leaving the tab.</p></div>
+      </figure>
+      <h4 class="h4">Items summary</h4>
+      <p>The Items summary tab holds everything about what is in the order. Search was added so an operator can find an item quickly — an order can run to dozens of lines.</p>
+      <figure class="diagram items anim">
+        <div class="shot">
+          <img src="assets/order-page-admin-11-fdd845f1.jpg" alt="Operator — items summary: search, totals, and the item table with a pencil to edit each line.">
+          <span class="dg-lead l3"></span>
+          <span class="dg-pin p3">1</span>
+        </div>
+        <div class="dg-lbl b b1"><p><span class="n">1</span>An operator can edit items in the list — add, delete or change the quantity.</p></div>
+      </figure>
+      <h4 class="h4">Activity log</h4>
+      <p>The last tab, Activity, holds the order’s full history — system logs and comments.</p>
+      <figure class="diagram activity anim">
+        <div class="shot">
+          <img src="assets/order-page-admin-12-587048b6.jpg" alt="Operator — activity: logs with filter chips (All, SMS, Email, Order changes, System logs) and the comments to picker and courier.">
+          <span class="dg-lead l3"></span>
+          <span class="dg-pin p3">1</span>
+        </div>
+        <div class="dg-lbl b b1"><p><span class="n">1</span>Filters narrow the log to the entries an operator is looking for.</p></div>
+      </figure>
+      <h4 class="h4">Navigation</h4>
+      <figure class="diagram opanels anim">
+        <div class="dg-lbl t t1"><p><span class="n">1</span>Order status can be changed at any moment from the header — it is on every tab.</p></div>
+        <div class="dg-lbl t t2"><p><span class="n">2</span>The sidebar keeps payment, responsible people and actions one click away on every tab.</p></div>
+        <div class="shot">
+          <div class="comp" role="img" aria-label="The header with the status control and the three sidebar panels — payment, responsible people, actions — shown side by side.">
+            <div class="comp-a"><img src="assets/order-page-admin-13-4ae22ba0.webp" alt=""></div>
+            <div class="comp-b"><img src="assets/order-page-admin-14-2f3b1a2c.webp" alt=""></div>
+            <div class="comp-c"><img src="assets/order-page-admin-15-f3e6699a.webp" alt=""></div>
+          </div>
+          <span class="dg-lead l1"></span><span class="dg-lead l2"></span><span class="dg-lead l3"></span>
+          <span class="dg-pin p1">1</span><span class="dg-pin p2">2</span><span class="dg-pin p3">3</span>
+        </div>
+        <div class="dg-lbl b b1"><p><span class="n">3</span>Confusing action labels were one of the client’s complaints — after an audit they were renamed in plain words.</p></div>
+      </figure>
+      <div class="video"><iframe src="https://www.youtube.com/embed/QGnw4pmXWS0?autoplay=1&mute=1&loop=1&playlist=QGnw4pmXWS0&controls=0&rel=0&modestbranding=1&playsinline=1&start=4" title="Order page — operator walkthrough" allow="autoplay; encrypted-media; picture-in-picture" allowfullscreen loading="lazy" referrerpolicy="strict-origin-when-cross-origin"></iframe></div>
+      <h3 class="h3">Financier</h3>
+      <p>The previous order page was overloaded with elements and actions a financier never needs. Using the OO UX map, the workflows and the interviews, the financier’s order page was cut down to the features their tasks require.</p>
+      <div class="video"><iframe src="https://www.youtube.com/embed/fvGNavNWwmQ?autoplay=1&mute=1&loop=1&playlist=fvGNavNWwmQ&controls=0&rel=0&modestbranding=1&playsinline=1" title="Order page — financier walkthrough" allow="autoplay; encrypted-media; picture-in-picture" allowfullscreen loading="lazy" referrerpolicy="strict-origin-when-cross-origin"></iframe></div>
+    </div>
+  </div>
+  <div class="row fade no-rule">
+    <div class="side">
+      <div class="t">Conclusions</div>
+    </div>
+    <div class="body">
+      <p>I analysed the problem, built a design concept, validated it with heuristic analysis and then tested it with users. Everything was presented to and discussed with the client, and the design got a good response. The next steps were design detail and implementation.</p>
+    </div>
+  </div>
+</section>
+
+<div class="wrap">
+  <div class="cta fade">
+    <p class="cta-k"><span class="dot"></span>Open to work</p>
+    <p class="cta-l">Let’s connect.</p>
+    <div class="cta-a">
+      <a href="#" class="cta-b">CV <span>↗</span></a>
+      <a href="#" class="cta-b">LinkedIn <span>↗</span></a>
+      <a href="mailto:kurchenkoviktoriia@gmail.com" class="cta-b">kurchenkoviktoriia@gmail.com</a>
+    </div>
+    <p class="cta-c">© 2026 Viktoriia Kurchenko</p>
+  </div>
+</div>
+
+<script>
+  const io = new IntersectionObserver((entries)=>{
+    entries.forEach((e,i)=>{
+      if(e.isIntersecting){
+        setTimeout(()=>e.target.classList.add('in'), (i%3)*60);
+        io.unobserve(e.target);
+      }
+    });
+  },{threshold:.15});
+  document.querySelectorAll('.fade, .diagram.anim').forEach(el=>io.observe(el));
+</script>
+<script>
+document.querySelectorAll('.gal').forEach(g=>{
+  const slides=[...g.querySelectorAll('.gal-slide')], dots=g.querySelector('.gal-dots');
+  let i=0, timer=null, userStopped=false;
+  const reduce=matchMedia('(prefers-reduced-motion: reduce)').matches;
+  slides.forEach((s,k)=>{const b=document.createElement('button');b.type='button';b.setAttribute('role','tab');b.setAttribute('aria-label','Problem '+(k+1));b.addEventListener('click',()=>{stop();show(k);});dots.appendChild(b);});
+  function show(k){i=(k+slides.length)%slides.length;slides.forEach((s,n)=>s.classList.toggle('on',n===i));[...dots.children].forEach((d,n)=>d.setAttribute('aria-selected',n===i?'true':'false'));if(!userStopped)queue();}
+  function queue(){clearTimeout(timer);if(reduce||userStopped)return;const d=parseFloat(slides[i].dataset.dur||7)*1000;timer=setTimeout(()=>show(i+1),d);}
+  function stop(){userStopped=true;clearTimeout(timer);}
+  g.querySelector('.gal-prev').addEventListener('click',()=>{stop();show(i-1);});
+  g.querySelector('.gal-next').addEventListener('click',()=>{stop();show(i+1);});
+  g.addEventListener('mouseenter',()=>clearTimeout(timer));
+  g.addEventListener('mouseleave',()=>{if(!userStopped)queue();});
+  g.addEventListener('focusin',()=>clearTimeout(timer));
+  g.addEventListener('keydown',e=>{if(e.key==='ArrowLeft'){stop();show(i-1);}if(e.key==='ArrowRight'){stop();show(i+1);}});
+  let x0=null;g.addEventListener('touchstart',e=>{x0=e.touches[0].clientX},{passive:true});g.addEventListener('touchend',e=>{if(x0===null)return;const dx=e.changedTouches[0].clientX-x0;if(Math.abs(dx)>40){stop();show(dx<0?i+1:i-1);}x0=null;});
+  const io=new IntersectionObserver(es=>{es.forEach(e=>{if(e.isIntersecting){if(!userStopped)queue();}else clearTimeout(timer);});},{threshold:.5});
+  io.observe(g); show(0); clearTimeout(timer);
+});
+</script>
+</body>
+</html>

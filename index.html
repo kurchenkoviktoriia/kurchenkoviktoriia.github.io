@@ -1,0 +1,312 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Viktoriia Kurchenko — Product Designer</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&family=JetBrains+Mono:wght@500&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --bg:#F2F1EF;
+    --surface:#FFFFFF;
+    --text:#111111;
+    --text-secondary:#666666;
+    --text-tertiary:#999999;
+    --accent:#4A5D4F;
+    --stroke:rgba(17,17,17,0.08);
+    --radius-control:999px;
+    /* 3D card dimensions */
+    --w:470px;
+    --h:362px;
+    --t:26px;
+  }
+  *{margin:0;padding:0;box-sizing:border-box}
+  html{scroll-behavior:smooth}
+  body{
+    background:var(--bg);color:var(--text);
+    font-family:'Inter',system-ui,sans-serif;
+    -webkit-font-smoothing:antialiased;line-height:1.5;
+  }
+  .wrap{max-width:1120px;margin:0 auto;padding:0 32px}
+
+  nav.wrap{padding-top:64px;padding-bottom:40px}
+  .nav-row{display:flex;align-items:center;gap:14px}
+  .monogram{
+    width:40px;height:26px;border-radius:999px;background:var(--text);
+    display:flex;align-items:center;justify-content:center;
+    color:var(--bg);font-weight:600;font-size:12px;
+  }
+  .nav-name{font-size:17px;font-weight:600;letter-spacing:-.01em}
+  .nav-name span{color:var(--text-tertiary);font-weight:500}
+
+  .hero{padding-top:96px;padding-bottom:64px}
+  h1{font-size:48px;line-height:1.2;font-weight:500;letter-spacing:-.04em;max-width:21ch}
+  .hero-actions{display:flex;align-items:center;gap:28px;margin-top:44px}
+  .pill{
+    display:inline-block;padding:14px 26px;border-radius:var(--radius-control);
+    background:var(--surface);border:1px solid var(--stroke);
+    color:var(--text);text-decoration:none;font-weight:500;font-size:16px;
+    transition:background .18s ease,color .18s ease;
+  }
+  .pill:hover{background:var(--text);color:var(--bg)}
+  .status{display:flex;align-items:center;gap:10px;color:var(--accent);font-size:16px;font-weight:500}
+  .dot{width:8px;height:8px;border-radius:50%;background:var(--accent)}
+
+  .label{font-size:13px;font-weight:600;letter-spacing:.08em;text-transform:uppercase;color:var(--text-tertiary)}
+  .cases{padding-top:96px;padding-bottom:40px}
+  .cases-note{margin-top:16px;max-width:62ch;color:var(--text-secondary);font-size:17px}
+  .cases-note strong{color:var(--text)}
+
+  /* ================= true 3D cards ================= */
+  .grid{
+    display:grid;grid-template-columns:1fr 1fr;gap:40px;margin-top:56px;
+  }
+  .case{text-decoration:none;color:inherit;display:block}
+
+  /* stage owns the perspective; nothing on the 3D chain has filter/overflow/opacity */
+  .stage{
+    position:relative;
+    width:100%;height:auto;aspect-ratio:470/362;
+    perspective:1300px;
+    perspective-origin:50% 50%;
+  }
+
+  .card3d{
+    position:absolute;inset:0;
+    transform-style:preserve-3d;
+    transform:rotateY(0deg);
+    transition:transform .7s cubic-bezier(.22,1.15,.32,1);
+  }
+  .case:hover .card3d{
+    transform:rotateY(22deg) translateY(-8px);
+  }
+
+  /* the card is an extrusion: a stack of identical rounded layers along Z.
+     identical shapes = a perfectly smooth silhouette at any angle. */
+  .ply{
+    position:absolute;inset:0;border-radius:14px;
+    backface-visibility:hidden;
+  }
+  .ply.cast{
+    box-shadow:0 24px 48px -14px rgba(17,17,17,.30), 0 6px 16px -8px rgba(17,17,17,.12);
+    transition:box-shadow .7s ease;
+  }
+  .case:hover .ply.cast{
+    box-shadow:0 32px 60px -16px rgba(17,17,17,.34), 0 8px 18px -8px rgba(17,17,17,.12);
+  }
+
+  .face.front{
+    position:absolute;inset:0;
+    transform:translateZ(calc(var(--t)/2 + 0.5px));
+    border-radius:14px;
+    padding:28px 32px 0;overflow:hidden;
+    backface-visibility:hidden;
+  }
+
+  /* ---- cover materials ---- */
+  .sage{--cover:linear-gradient(150deg,#DFE6E0 0%,#C3D0C6 100%)}
+  .sand{--cover:linear-gradient(150deg,#EBE6DC 0%,#D7CEBC 100%)}
+  .face.front{background:var(--cover)}
+
+  .cover-meta{
+    display:flex;justify-content:space-between;align-items:baseline;
+    padding-bottom:14px;margin-bottom:24px;
+    border-bottom:1.5px solid rgba(17,17,17,.55);
+  }
+  .cover-title{font-size:22px;font-weight:600;letter-spacing:-.02em}
+  .read-time{font-size:13px;color:rgba(17,17,17,.45);font-weight:500}
+
+  .window{
+    position:relative;margin:18px auto 0;width:82%;height:auto;aspect-ratio:1.6;
+    background:var(--surface);border-radius:0;overflow:hidden;
+    box-shadow:0 10px 24px rgba(17,17,17,.14);
+  }
+  .titlebar{display:flex;align-items:center;gap:6px;padding:12px 14px;border-bottom:1px solid var(--stroke)}
+  .tl{width:9px;height:9px;border-radius:50%;background:rgba(17,17,17,.14)}
+  .win-body{display:flex;height:100%}
+  .win-shot{display:block;width:100%;height:100%;object-fit:contain;border-radius:0}
+  .win-rail{width:26%;border-right:1px solid var(--stroke);padding:12px 10px}
+  .win-main{flex:1;padding:12px 14px}
+  .bar{height:8px;border-radius:4px;background:rgba(17,17,17,.08);margin-bottom:8px}
+  .bar.w40{width:40%}.bar.w65{width:65%}.bar.w80{width:80%}
+  .chip{height:8px;border-radius:4px;background:rgba(74,93,79,.35);width:55%;margin-bottom:8px}
+
+  .coming-badge{
+    position:absolute;left:0;right:0;top:47%;z-index:2;
+    background:rgba(240,239,237,.88);
+    text-align:center;padding:14px 0;
+    font-size:13px;font-weight:600;letter-spacing:.08em;text-transform:uppercase;
+    color:var(--text-secondary);
+  }
+  .coming .cover-title,.coming .window{opacity:.55}
+
+  .hello{padding-top:128px;padding-bottom:72px}
+  .two-col{display:grid;grid-template-columns:280px 1fr;gap:48px;align-items:start;padding:56px 0;border-top:1px solid var(--stroke)}
+  .two-col h2{font-size:26px;line-height:1.4;font-weight:500;letter-spacing:-.02em}
+  .two-col p{font-size:22px;line-height:1.45;letter-spacing:-.01em;color:var(--text-secondary);font-weight:500;max-width:56ch}
+  .two-col p strong{color:var(--text);font-weight:600}
+
+
+  /* ---------- contact — same block as the case study ---------- */
+  .cta{
+    position:relative;overflow:hidden;isolation:isolate;
+    margin:0 0 32px;padding:92px 40px 80px;text-align:center;border-radius:26px;
+    background:
+      radial-gradient(90% 120% at 15% 0%, rgba(255,255,255,.55) 0%, rgba(255,255,255,0) 55%),
+      linear-gradient(150deg,#DFE6E0 0%,#C3D0C6 100%);
+  }
+  .cta::before{
+    content:'';position:absolute;inset:0;z-index:-1;pointer-events:none;
+    background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='180' height='180'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='180' height='180' filter='url(%23n)'/%3E%3C/svg%3E");
+    opacity:.30;mix-blend-mode:multiply;
+  }
+  .cta-k{
+    display:inline-flex;align-items:center;gap:10px;margin:0 0 22px;
+    font-size:16px;font-weight:500;color:var(--accent);
+  }
+  .cta-l{
+    font-size:24px;line-height:1.35;color:var(--text);letter-spacing:-.01em;
+    margin:0 auto 34px;max-width:40ch;
+  }
+  .cta-a{display:flex;flex-wrap:wrap;justify-content:center;gap:12px}
+  .cta-b{
+    display:inline-flex;align-items:center;gap:8px;padding:13px 22px;border-radius:14px;
+    background:rgba(255,255,255,.62);border:0;
+    font-size:16px;color:var(--text);text-decoration:none;
+    transition:background .18s ease,transform .18s ease;
+  }
+  .cta-b:hover{background:rgba(255,255,255,.92);transform:translateY(-1px)}
+  .cta-b span{color:var(--text-tertiary);font-size:14px}
+  .cta-c{margin:46px 0 0;font-size:13px;color:rgba(17,17,17,.34)}
+  @media (max-width:860px){.cta{margin-bottom:32px;padding:60px 22px 54px;border-radius:20px}.cta-l{font-size:19px}}
+
+  footer.wrap{padding-top:64px;padding-bottom:64px;color:var(--text-tertiary);font-size:14px}
+
+  .fade{opacity:0;transform:translateY(12px);transition:opacity .4s ease-out,transform .4s ease-out}
+  .fade.in{opacity:1;transform:none}
+  @media (prefers-reduced-motion: reduce){
+    .fade{opacity:1;transform:none;transition:none}
+    .card3d,.case:hover .card3d{transition:none;transform:rotateY(0deg)}
+  }
+  @media (max-width:1060px){
+    .cover-title{font-size:20px}
+  }
+  @media (max-width:860px){
+    h1{font-size:34px}
+    .grid{grid-template-columns:1fr;gap:40px}
+    .two-col{grid-template-columns:1fr;gap:20px}
+  }
+  @media (max-width:560px){
+    .hero-actions{flex-direction:column;align-items:flex-start;gap:20px}
+  }
+  @media (max-width:430px){
+    .cover-meta{margin-bottom:14px}
+    .face.front{padding:20px 22px 0}
+  }
+</style>
+</head>
+<body>
+
+<nav class="wrap">
+  <div class="nav-row">
+    <div class="monogram">VK</div>
+    <div class="nav-name">Viktoriia Kurchenko <span>— Product Designer</span></div>
+  </div>
+</nav>
+
+<header class="hero wrap">
+  <h1 class="fade">I design the part between the idea and the build — research, flow, a coded prototype — so less comes back broken.</h1>
+  <div class="hero-actions fade">
+    <a class="pill" href="mailto:kurchenkoviktoriia@gmail.com">Get in touch</a>
+    <div class="status"><span class="dot"></span>Open to work</div>
+  </div>
+</header>
+
+<section class="cases wrap">
+  <div class="label fade">Case studies</div>
+
+  <div class="grid">
+    <!-- Card 1 -->
+    <a class="case sage fade" href="feature-driven-flow.html">
+      <div class="stage">
+        <div class="card3d">
+          <div class="face front">
+            <div class="cover-meta">
+              <div class="cover-title">Feature-Driven Flow</div>
+            </div>
+            <div class="window" style="aspect-ratio:3004/2172">
+              <img class="win-shot" src="assets/index-01-5729a2ec.jpg" alt="Modaal workspace: chat list, conversation, feature spec and features rail">
+            </div>
+          </div>
+        </div>
+      </div>
+    </a>
+
+    <!-- Card 2 -->
+    <a class="case sand fade" href="order-page-admin.html">
+      <div class="stage">
+        <div class="card3d">
+          <div class="face front">
+            <div class="cover-meta">
+              <div class="cover-title">Order page – admin</div>
+            </div>
+            <div class="window" style="aspect-ratio:2880/1920">
+              <img class="win-shot" src="assets/index-02-c1bbd73b.jpg" alt="Zakaz order page for the operator">
+            </div>
+          </div>
+        </div>
+      </div>
+    </a>
+
+  </div>
+</section>
+
+<section class="hello wrap">
+  <div class="two-col fade">
+    <h2>How I can help</h2>
+    <p>Product designer for web, mobile and AI tools. I take a product goal through <strong>user research, problem framing, UX/UI design and testing</strong>, and <strong>prototype in code</strong>. I work closely with PMs and engineers from the first concept to the shipped screen.</p>
+  </div>
+</section>
+
+<div class="wrap">
+  <div class="cta fade">
+    <p class="cta-k"><span class="dot"></span>Open to work</p>
+    <p class="cta-l">Let’s connect.</p>
+    <div class="cta-a">
+      <a href="#" class="cta-b">CV <span>↗</span></a>
+      <a href="#" class="cta-b">LinkedIn <span>↗</span></a>
+      <a href="mailto:kurchenkoviktoriia@gmail.com" class="cta-b">kurchenkoviktoriia@gmail.com</a>
+    </div>
+    <p class="cta-c">© 2026 Viktoriia Kurchenko</p>
+  </div>
+</div>
+
+<script>
+  // build the extrusion: 18 identical layers from front to back, darkening with depth
+  document.querySelectorAll('.card3d').forEach(c=>{
+    const N=18, t=26;
+    for(let i=0;i<N;i++){
+      const d=document.createElement('div');
+      d.className='ply'+(i===N-1?' cast':'');
+      const z=(t/2) - i*(t/(N-1));
+      const dark=(i/(N-1))*0.16;
+      d.style.transform=`translateZ(${z}px)`;
+      d.style.background=`linear-gradient(rgba(17,17,17,${dark.toFixed(3)}),rgba(17,17,17,${dark.toFixed(3)})), var(--cover)`;
+      c.insertBefore(d,c.firstChild);
+    }
+  });
+
+  const io = new IntersectionObserver((entries)=>{
+    entries.forEach((e,i)=>{
+      if(e.isIntersecting){
+        setTimeout(()=>e.target.classList.add('in'), (i%4)*60);
+        io.unobserve(e.target);
+      }
+    });
+  },{threshold:.2});
+  document.querySelectorAll('.fade').forEach(el=>io.observe(el));
+</script>
+</body>
+</html>
