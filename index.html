@@ -178,6 +178,8 @@
     transition:background .18s ease,transform .18s ease;
   }
   .cta-b:hover{background:rgba(255,255,255,.92);transform:translateY(-1px)}
+  .copy-mail .cm-t{display:inline-block;min-width:0}
+  .copy-mail.copied{background:rgba(255,255,255,.92)}
   .cta-b span{color:var(--text-tertiary);font-size:14px}
   .cta-c{margin:46px 0 0;font-size:13px;color:rgba(17,17,17,.34)}
   @media (max-width:860px){.cta{margin-bottom:32px;padding:60px 22px 54px;border-radius:20px}.cta-l{font-size:19px}}
@@ -276,7 +278,7 @@
     <p class="cta-l">Let’s connect.</p>
     <div class="cta-a">
       <a href="https://www.linkedin.com/in/vika-kurchenko/" target="_blank" rel="noopener" class="cta-b">LinkedIn <span>↗</span></a>
-      <a href="mailto:kurchenkoviktoriia@gmail.com" class="cta-b">kurchenkoviktoriia@gmail.com</a>
+      <a href="mailto:kurchenkoviktoriia@gmail.com" class="cta-b copy-mail" data-mail="kurchenkoviktoriia@gmail.com" title="Click to copy"><span class="cm-t">kurchenkoviktoriia@gmail.com</span> <span>⧉</span></a>
     </div>
     <p class="cta-c">© 2026 Viktoriia Kurchenko</p>
   </div>
@@ -306,6 +308,19 @@
     });
   },{threshold:.2});
   document.querySelectorAll('.fade').forEach(el=>io.observe(el));
+</script>
+<script>
+document.querySelectorAll('.copy-mail').forEach(function(a){
+  a.addEventListener('click',function(e){
+    if(!navigator.clipboard) return; // fallback: mailto
+    e.preventDefault();
+    var t=a.querySelector('.cm-t'),orig=t.textContent;
+    navigator.clipboard.writeText(a.dataset.mail).then(function(){
+      t.textContent='Copied';a.classList.add('copied');
+      setTimeout(function(){t.textContent=orig;a.classList.remove('copied')},1400);
+    }).catch(function(){location.href=a.href});
+  });
+});
 </script>
 </body>
 </html>
