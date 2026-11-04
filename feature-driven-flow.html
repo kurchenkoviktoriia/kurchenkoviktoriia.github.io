@@ -432,9 +432,9 @@
     </div>
     <div class="body">
       <h4 class="h4">Business</h4>
-      <p>We wanted to boost conversion after the two-day trial. Our hypothesis: users spent it re-prompting and rebuilding instead of reaching something that works — and every retry burns their own agent credits.</p>
+      <p>We wanted to improve retention. Early user feedback showed that, as apps grew, builds sometimes broke after a week or two, and users couldn’t always fix them. They got stuck, re-prompted and rebuilt, spending their own agent credits on fixes instead of new features. That’s the moment people can give up.</p>
 
-      <p><strong>Six interviews surfaced three problems, all working against that goal:</strong></p>
+      <p><strong>User feedback, the agent logs and an audit of the interface surfaced three problems, all working against that goal:</strong></p>
       <ul class="pblist">
         <li><strong>They design screens first and ask for data later</strong> — the screens get built on placeholder data, and when the real backend arrives the agent has to rewire every one of them.</li>
         <li><strong>They ask for more in one prompt than the agent can hold</strong> — requirements drop out, and it still reports the work finished.</li>
@@ -519,7 +519,7 @@
         <div class="dg-lbl t t3"><p><span class="n">2</span><strong>The active conversation</strong>, directly beside its list.</p></div>
         <div class="dg-lbl t t2"><p><span class="n">5</span><strong>The features rail</strong> — the global project context.</p></div>
         <div class="shot">
-          <img src="assets/feature-driven-flow-03-293ad8b7.png?v=20261030" alt="The workspace: the chat list on the far left, the active conversation beside it, an open feature spec in the middle, and the features rail on the far right" />
+          <img src="assets/feature-driven-flow-03-293ad8b7.png" alt="The workspace: the chat list on the far left, the active conversation beside it, an open feature spec in the middle, and the features rail on the far right" />
           <span class="dg-lead l1"></span><span class="dg-lead l2"></span><span class="dg-lead l3"></span><span class="dg-lead l4"></span><span class="dg-lead l5"></span><span class="dg-lead l6"></span>
           <span class="dg-pin p1">1</span><span class="dg-pin p2">5</span><span class="dg-pin p3">3</span><span class="dg-pin p4">4</span><span class="dg-pin p5">6</span><span class="dg-pin p6">2</span>
         </div>
@@ -555,7 +555,7 @@
           <li class="kf-c a"><span class="kf-r">Agent</span>writes the spec</li>
           <li class="kf-c u"><span class="kf-r">User</span>approves it, or leaves comments</li>
           <li class="kf-c a"><span class="kf-r">Agent</span>builds it</li>
-          <li class="kf-c m"><span class="kf-r">User or agent</span>checks it works</li>
+          <li class="kf-c a"><span class="kf-r">Agent</span>tests it, then asks to commit</li>
           <li class="kf-c u"><span class="kf-r">User</span>commits it</li>
         </ol>
       </figure>
@@ -580,7 +580,7 @@
         </li>
         <li>
           <p><strong>Statuses carry the rest</strong> — each feature shows where it stands; each chat shows what the agent is doing: working, waiting for you, or finished.</p>
-          <div class="dec-img dec-alt"><img src="assets/feature-driven-flow-07-11784bb7.png" alt="The features rail: features grouped under Planning, Building and Done."><img src="assets/feature-driven-flow-08-6e4c395e.png?v=20261030" alt="The chat list: one chat waiting for you, one with the agent working, one finished."></div>
+          <div class="dec-img dec-alt"><img src="assets/feature-driven-flow-07-11784bb7.png" alt="The features rail: features grouped under Planning, Building and Done."><img src="assets/feature-driven-flow-08-6e4c395e.png" alt="The chat list: one chat waiting for you, one with the agent working, one finished."></div>
         </li>
       </ul>
     </div>
@@ -591,7 +591,7 @@
       <div class="s">90 seconds, prompt to commit</div>
     </div>
     <div class="body">
-      <video style="display:block;width:100%;height:auto;aspect-ratio:1600/1000;border-radius:12px;box-shadow:0 2px 6px rgba(17,17,17,.05),0 16px 48px rgba(17,17,17,.10);margin:0 0 8px;background:transparent" poster="assets/feature-driven-flow-09-89c5cd07.jpg?v=20261030" preload="auto" src="assets/feature-driven-flow-10-9b9032a4.mp4?v=20261030" autoplay muted loop playsinline></video>
+      <video style="display:block;width:100%;height:auto;aspect-ratio:1600/1000;border-radius:12px;box-shadow:0 2px 6px rgba(17,17,17,.05),0 16px 48px rgba(17,17,17,.10);margin:0 0 8px;background:transparent" poster="assets/feature-driven-flow-09-89c5cd07.jpg" preload="auto" src="assets/feature-driven-flow-10-9b9032a4.mp4" autoplay muted loop playsinline></video>
     </div>
   </div>
 </section>
@@ -605,15 +605,11 @@
 
   <div class="row fade">
     <div class="side">
-      <div class="t">Measured / instrumented</div>
+      <div class="t">Shipped and tested</div>
     </div>
     <div class="body">
-      <p>The flow shipped, including the skip path, and new features now go through it by default. Results weren’t in before I left; these are the three measures we set up against the previous model:</p>
-      <ul class="pblist">
-        <li><strong>Feature adoption</strong> — how many projects plan a feature at all.</li>
-        <li><strong>Cost and time on the same brief</strong> — the same app built under both models.</li>
-        <li><strong>Trial → paid conversion</strong>.</li>
-      </ul>
+      <p>The flow shipped, including the skip path, and new features went through it by default. Feature statuses and a plain-language summary for people were planned as the next step. There weren’t enough users for analytics, so we tested with users in six sessions with the prototype.</p>
+      <p>People got through the flow without major problems: they followed the planning suggestion, answered the question cards and reviewed the plan before building. Two things confused people: the agent’s technical language, which we parked to keep the focus on the core flow, and the commit option “Review the changes yourself first”, which some people read as a task for them.</p>
     </div>
   </div>
 
